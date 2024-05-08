@@ -5,64 +5,64 @@ import Image from "next/image";
 import pfp from "../../../../public/pfp.png";
 import { Separator } from "@/components/ui/separator";
 import Link from "next/link";
-import { Tabs, TabsTrigger, TabsList, TabsContent } from "@/components/ui/tabs";
-import { ImageIcon, ImageOff, Notebook } from "lucide-react";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Text, Video } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { TipTapEditor } from "@/app/components/TipTapEditor";
 import { SubmitButtons } from "@/app/components/SubmitButtons";
 import { UploadDropzone } from "@/app/components/Uploadthing";
 import { useState } from "react";
+
 import { JSONContent } from "@tiptap/react";
 import { createPost } from "@/app/action";
 
 const rules = [
   {
     id: 1,
-    text: "Drink Water",
+    text: "Remember the human",
   },
   {
     id: 2,
-    text: "Take bath",
+    text: "Behave like you would in real life",
   },
   {
     id: 3,
-    text: "Eat Food",
+    text: "Look for the original source of content",
   },
   {
     id: 4,
-    text: "Exercise Daily",
+    text: "Search for duplication before posting",
   },
   {
     id: 5,
-    text: "Sleep Well",
+    text: "Read the community guidlines",
   },
 ];
 
 export default function CreatePostPage({ params }: { params: { id: string } }) {
-  const [imageURL, setImageURL] = useState<null | string>(null);
+  const [imageUrl, setImageUrl] = useState<null | string>(null);
   const [json, setJson] = useState<null | JSONContent>(null);
   const [title, setTitle] = useState<null | string>(null);
 
   const createPostReddit = createPost.bind(null, { jsonContent: json });
-
   return (
-    <div className="max-w-[1000px] flex mx-auto gap-x-10 mt-4">
+    <div className="max-w-[1000px] mx-auto flex gap-x-10 mt-4">
       <div className="w-[65%] flex flex-col gap-y-5">
         <h1 className="font-semibold">
           Subreddit:{" "}
-          <Link className="text-primary" href={`/r/${params.id}`}>
-            {params.id}
+          <Link href={`/r/${params.id}`} className="text-primary">
+            r/{params.id}
           </Link>
         </h1>
         <Tabs defaultValue="post" className="w-full">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="post">
-              <Notebook className="w-4 h-4 mr-2" />
-              Post
+              <Text className="h-4 w-4 mr-2" /> Post
             </TabsTrigger>
             <TabsTrigger value="image">
-              <ImageIcon className="w-4 h-4 mr-2" />
-              Media
+              <Video className="h-4 w-4 mr-2" />
+              Image & Video
             </TabsTrigger>
           </TabsList>
           <TabsContent value="post">
@@ -70,11 +70,12 @@ export default function CreatePostPage({ params }: { params: { id: string } }) {
               <form action={createPostReddit}>
                 <input
                   type="hidden"
-                  name="imageURL"
-                  value={imageURL ?? undefined}
+                  name="imageUrl"
+                  value={imageUrl ?? undefined}
                 />
                 <input type="hidden" name="subName" value={params.id} />
                 <CardHeader>
+                  <Label>Title</Label>
                   <Input
                     required
                     name="title"
@@ -82,6 +83,7 @@ export default function CreatePostPage({ params }: { params: { id: string } }) {
                     value={title ?? ""}
                     onChange={(e) => setTitle(e.target.value)}
                   />
+
                   <TipTapEditor setJson={setJson} json={json} />
                 </CardHeader>
                 <CardFooter>
@@ -93,24 +95,24 @@ export default function CreatePostPage({ params }: { params: { id: string } }) {
           <TabsContent value="image">
             <Card>
               <CardHeader>
-                {imageURL === null ? (
+                {imageUrl === null ? (
                   <UploadDropzone
                     className="ut-button:bg-primary ut-button:ut-readying:bg-primary/50 ut-label:text-primary ut-button:ut-uploading:bg-primary/50 ut-button:ut-uploading:after:bg-primary"
                     endpoint="imageUploader"
                     onClientUploadComplete={(res) => {
-                      setImageURL(res[0].url);
+                      setImageUrl(res[0].url);
                     }}
-                    onUploadError={(err: Error) => {
+                    onUploadError={(error: Error) => {
                       alert("Error");
                     }}
                   />
                 ) : (
                   <Image
-                    src={imageURL}
-                    alt="ImageURL"
-                    height={400}
+                    src={imageUrl}
+                    alt="uploaded image"
                     width={500}
-                    className="w-full h-80 object-contain rounded-lg"
+                    height={400}
+                    className="h-80 rounded-lg w-full object-contain"
                   />
                 )}
               </CardHeader>
@@ -121,7 +123,7 @@ export default function CreatePostPage({ params }: { params: { id: string } }) {
       <div className="w-[35%]">
         <Card className="flex flex-col p-4">
           <div className="flex items-center gap-x-2">
-            <Image src={pfp} alt="pfp" className="h-10 w-10" />
+            <Image className="h-10 w-10" src={pfp} alt="pfp" />
             <h1 className="font-medium">Posting to Reddit</h1>
           </div>
           <Separator className="mt-2" />
