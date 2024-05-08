@@ -97,11 +97,7 @@ export default function Home({
   );
 }
 
-export async function ShowItems({
-  searchParams,
-}: {
-  searchParams: { page: string };
-}) {
+async function ShowItems({ searchParams }: { searchParams: { page: string } }) {
   const { count, data } = await getData(searchParams.page);
   return (
     <>
