@@ -80,7 +80,7 @@ export default function CreatePostPage({ params }: { params: { id: string } }) {
                     required
                     name="title"
                     placeholder="Title"
-                    value={title ?? ""}
+                    value={title ?? undefined}
                     onChange={(e) => setTitle(e.target.value)}
                   />
 
